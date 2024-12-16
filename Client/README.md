@@ -10,7 +10,7 @@ Takes coins and changes their Authenticity numbers to change ownership.
 Process | Purpose
 ---|---
 [Echo](#echo) | Echos 25 servers while the user is choosing files to authenticate.
-[Depoit Prep](#deposit-prep) | Checks folders for work from other jobs that were not completed
+[Deposit Prep](#deposit-prep) | Checks folders for work from other jobs that were not completed
 [Receipt Started](#receipt-starter) | Creates a GUID that will be used as the deposit ID. 
 [File Picker](#file-picker) | Creates a list off all the files that will be deposited
 [File Unpacker](#file-unpacker) | Unzip files, removes bin from PNGs and seperates multi-coin files into individual files. 
