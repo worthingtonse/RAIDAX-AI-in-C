@@ -15,7 +15,11 @@ Process | Purpose
 [Conflict Checker](#confilict-checker) | Makes sure that the coins being authenticated are not already in the file system. 
 [GUID Generation](#guid-generation) | Creates the GUIDs that will be used to change ANs and writes them to file. 
 [Timeout Calculator](#timeout-calculator) | Uses the Detection Log to calculate the appropriate 
-[Detection](#detection) | Changes the ANs in the PANs
+[Detection Command Prep](#detection-commnad-prep) | Changes the ANs in the PANs
+[TCP/IP Decider](#tcp/ip-decider) | Decides if the TCP or UDP protocol will be used. 
+[TCP Detection Command Encryption](#tcp-detection-command-encryption) | Changes the ANs in the PANs
+[UDP Detection Command Encryption](#udp-detection-command-encryption) | Changes the ANs in the PANs
+[Detection Requester](#detection) | Sends requests to the RAIDA and Receives Responses
 [Mop Up Detection](#mop-up-detection) | Runs detection again if Sum does not work. 
 [Detection Logger](#detection-logger) | Records speeds and outcomes of detection process
 [Grader](#grader) | Determines if a coin is counterfeit or not based on the response from the RAIDA. 
