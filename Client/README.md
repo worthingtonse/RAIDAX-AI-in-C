@@ -32,6 +32,44 @@ Process | Purpose
 [Fracture Fixer](#fracture-fixer) | Fixed coins that are fracked 
 [Receipt Recorder](#receipt-recorder) 
 
+# Deposit
+## File Unpacker
+
+### Job Creator
+Generate a GUID for receipt (or make the GUID do this or allow override)
+Create a file in the receipts folder named the GUID and write start time to log. 
+
+### Unzipper
+unzipped checks import folder for zipped files. 
+	If unzipped files already in imported check to see if they are identical
+		same: Write over them. 
+		different: give “already exists” tag (Log to receipt)
+
+### PNG unpacker
+Split the png file into single binary coins and keep those in the import folder.  
+	If unpacked files already in imported check to see if they are identical
+		same: Write over them. 
+		different: give “already exists” tag. (Log to receipt)
+
+### Binary unpacker
+Read file, split up coins write them as TXT files with GUID name. 
+	If unpacked files already in imported check to see if they are identical
+		same: Write over them. 
+		different: give “already exists.random” tag. (Log to receipt)
+
+### Write them as TXT ini files. and write them to the Suspect folder.
+	if the files are already in the suspect folder, see if they are identical. 
+	identical files can be dropped.
+	Non identical are given a random code and put into the SuspectCopies (Log issue)
+
+### Move all files to the imported folder. 
+if the files are already in the suspect folder, see if they are identical. 
+	identical files can be dropped.
+	Non identical are given a random code and put into the SuspectCopies (Log issue)
+
+
+
+
 # DOWNLOAD LOCKER COINS
 Process | Purpose
 ---|---
