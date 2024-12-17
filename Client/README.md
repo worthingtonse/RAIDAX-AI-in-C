@@ -58,22 +58,54 @@ Split the png file into single binary coins and keep those in the import folder.
 ### Binary unpacker
 Read file, split up coins write them as TXT files with GUID name. 
 	If format is incorrect- Log and move to trash
+
+ ### Check Bank
+ 	See if coin is already in the Bank, Limbo or Fracked folder. 
+  		Yes: Put into garbage. Note in receipt log. 
 	If unpacked files already in imported check to see if they are identical
 		same: Write over them. 
 		different: give “already exists.random” tag. (Log to receipt)
-	Write them as TXT ini files. and write them to the Suspect folder.
+  ### Generage GUIDs PANs
+  	Generate GUIDs based on send type.
+   
+  ### Write TXT files to Suspect 
+	Write them as TXT ini files with PANs. and write them to the Suspect folder.
 	if the files are already in the suspect folder, see if they are identical. 
 	identical files can be dropped.
-	Non identical are given a random code and put into the SuspectCopies (Log issue)
-
-### TXT files will be 
+	Non identical files re both given a random code and put into the Duplicates (Log issue)
 
 ### Move all files to the imported folder. 
-if the files are already in the suspect folder, see if they are identical. 
-	identical files can be dropped.
-	Non identical are given a random code and put into the SuspectCopies (Log issue)
+	if the files are already in the suspect folder, see if they are identical. 
+		identical files can be dropped.
+		Non identical are given a random code and put into the ImportedDuplicates (Log issue)
 
+## Authenticity Detector
 
+### Create Requests
+ 	Create POWN Sum requests array. [TCP, raida, receipt number, request ]
+  	Create POWN Sum Failed Request Array [raida, receipt number, request ]
+   	Create POWN array
+    	Create Failed POWN array.
+     	Create Response Array
+  
+### POWN Sum
+	Call pown sum. 
+ 	Write to file. 
+### POWN one if necessary
+	Call pown 
+ 	Write to file.
+
+### Fix Limbo
+	Create Fix Request Array. 
+	Find service
+### Fix Fracked
+	Create array of Tickets
+	Get Tickets by Sum
+ 	Get Ticket
+  	Create Fix requests array
+  	Fix
+ 
+## Grade
 
 
 # DOWNLOAD LOCKER COINS
