@@ -9,17 +9,18 @@ Coins
   ├── simple.log
   ├── Templates
   └── Wallets
-    ├── Bank
-    ├── config.toml
-    ├── Counterfeit
-    ├── Export
-    ├── Fracked
-    ├── Import
-    ├── Imported
-    ├── Limbo
-    ├── Receipts
-    ├── Sent
-    ├── Suspect
-    ├── transactions.csv
-    └── Trash
+    └── Default
+      ├── Bank
+      ├── config.toml
+      ├── Counterfeit
+      ├── Export
+      ├── Fracked
+      ├── Import
+      ├── Imported
+      ├── Limbo
+      ├── Receipts
+      ├── Sent
+      ├── Suspect
+      ├── transactions.csv
+      └── Trash
 ```
