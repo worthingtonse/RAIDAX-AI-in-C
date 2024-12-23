@@ -9,6 +9,7 @@ Takes coins and changes their Authenticity numbers to change ownership.
 
 Process | Purpose
 ---|---
+[Count Coins](#count-coins) | Tells you how many coins are in the wallets
 [Echo](#echo) | Echos 25 servers while the user is choosing files to authenticate.
 [Deposit Prep](#deposit-prep) | Checks folders for work from other jobs that were not completed
 [Receipt Started](#receipt-starter) | Creates a GUID that will be used as the deposit ID. 
@@ -31,6 +32,52 @@ Process | Purpose
 [Limbo Fixer](#limbo-fixer) | Repair coins that are in Limbo
 [Fracture Fixer](#fracture-fixer) | Fixed coins that are fracked 
 [Receipt Recorder](#receipt-recorder) 
+
+# Count Coins
+Counts how many coins are in the coin wallets. Takes the wallet name a parmeter. 
+
+There is root folder called Coins. Within the Coins folder is a folder called Wallets. 
+
+If there is no Wallet folder then the program must create it. 
+
+Within the Wallets folder there will be a folder with the same name as the wallet name. 
+
+If there are not folders in the Wallet folder, then a folder named "Default" should be created with the following subfolders:
+
+```dos
+Wallets
+   └── Default
+      ├── Bank
+      ├── config.toml
+      ├── Counterfeit
+      ├── Export
+      ├── Fracked
+      ├── Import
+      ├── Imported
+      ├── Limbo
+      ├── Receipts
+      ├── Sent
+      ├── Suspect
+      ├── transactions.csv
+      └── Trash
+```
+
+Within the wallet-name folders there are three folders name Bank, Fracked and Limbo. Within these three folders are coin files. The names of the coin files have many parts seperated with periods. The first part of the file is a number that describes how many coins the file is worth. 
+
+The number of coins in each of the three files should be totaled.
+
+The function returns a JSON string that has an array of wallet names along with coin counts of each of the three folders. Like this: 
+```json
+{
+    "wallets": {
+        "Default":
+            {"bank": 1882,"fracked":9982.098, "limbo":88.000343},
+        "Savings": 
+            {"bank": 1882,"fracked":9982.098, "limbo":88.000343}
+    }
+}
+```
+If there is no Wallet folder or no 
 
 # Deposit
 ## File Unpacker
