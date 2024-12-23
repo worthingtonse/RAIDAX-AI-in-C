@@ -34,6 +34,8 @@ Process | Purpose
 [Receipt Recorder](#receipt-recorder) 
 
 # Count Coins
+
+<!--
 The function begins by starting a timer. 
 
 The function reads a file in the root folder called count.#.txt (where the hash symbol is an unknown number) into a string.  
@@ -43,7 +45,7 @@ The number in the file name is the amount of seconds it took to finish the last 
 It examines the time stamp on the file. If the file was changed more than the number of seconds for last count, the string has the world "old" added to the end. Otherwise the string has the word "new" added to it. 
 
 The function returns this string but then the function will continue to do work. 
-
+-->
 It counts how many coins are in the coin wallets by doing the following:
 
 There is root folder called Coins. Within the Coins folder is a folder called Wallets. 
@@ -87,6 +89,7 @@ The function returns a JSON string that has an array of wallet names along with 
     }
 }
 ```
+<!--
 The timer is then stopped and the number of seconds is rounded up. 
 
 The function then deletes the existing cound file in the root directory. 
@@ -95,7 +98,7 @@ A new count file is created with the number of seconds included in its name such
 count.#.txt where the # is the number of seconds. 
 
 This json is then written to a file count file. 
-
+-->
 The end. 
 
 # Deposit
