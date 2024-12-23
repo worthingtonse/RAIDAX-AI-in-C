@@ -34,7 +34,17 @@ Process | Purpose
 [Receipt Recorder](#receipt-recorder) 
 
 # Count Coins
-Counts how many coins are in the coin wallets. Takes the wallet name a parmeter. 
+The function begins by starting a timer. 
+
+The function reads a file in the root folder called count.#.txt (where the hash symbol is an unknown number) into a string.  
+
+The number in the file name is the amount of seconds it took to finish the last count. 
+
+It examines the time stamp on the file. If the file was changed more than the number of seconds for last count, the string has the world "old" added to the end. Otherwise the string has the word "new" added to it. 
+
+The function returns this string but then the function will continue to do work. 
+
+It counts how many coins are in the coin wallets by doing the following:
 
 There is root folder called Coins. Within the Coins folder is a folder called Wallets. 
 
@@ -42,7 +52,7 @@ If there is no Wallet folder then the program must create it.
 
 Within the Wallets folder there will be a folder with the same name as the wallet name. 
 
-If there are not folders in the Wallet folder, then a folder named "Default" should be created with the following subfolders:
+If there are no folders in the Wallet folder, then a folder named "Default" should be created with the following subfolders:
 
 ```dos
 Wallets
@@ -62,7 +72,7 @@ Wallets
       └── Trash
 ```
 
-Within the wallet-name folders there are three folders name Bank, Fracked and Limbo. Within these three folders are coin files. The names of the coin files have many parts seperated with periods. The first part of the file is a number that describes how many coins the file is worth. 
+Within the wallet-name folders there are three folders name Bank, Fracked and Limbo. Within these three folders are coin files. The names of the coin files have many parts seperated with periods. The first part of the file is a  number that describes how many coins the file is worth. 
 
 The number of coins in each of the three files should be totaled.
 
@@ -77,7 +87,16 @@ The function returns a JSON string that has an array of wallet names along with 
     }
 }
 ```
-If there is no Wallet folder or no 
+The timer is then stopped and the number of seconds is rounded up. 
+
+The function then deletes the existing cound file in the root directory. 
+
+A new count file is created with the number of seconds included in its name such as 
+count.#.txt where the # is the number of seconds. 
+
+This json is then written to a file count file. 
+
+The end. 
 
 # Deposit
 ## File Unpacker
