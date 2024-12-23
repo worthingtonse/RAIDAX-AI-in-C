@@ -66,14 +66,14 @@ Within the wallet-name folders there are three folders name Bank, Fracked and Li
 
 The number of coins in each of the three files should be totaled.
 
-The function returns a JSON string that has an array of wallet names along with coin counts of each of the three folders. Like this: 
+The function returns a JSON string that has an array of wallet names along with coin counts of each of the three folders. The following is an example of a Wallets folder with two sub folders named Default and Savings.  
 ```json
 {
     "wallets": {
         "Default":
             {"bank": 1882,"fracked":9982.098, "limbo":88.000343},
         "Savings": 
-            {"bank": 1882,"fracked":9982.098, "limbo":88.000343}
+            {"bank": 34,"fracked":.098, "limbo":18.267}
     }
 }
 ```
