@@ -76,9 +76,9 @@ Wallets
 
 Within the wallet-name folders there are three folders name Bank, Fracked and Limbo. Within these three folders are coin files. The names of the coin files have many parts seperated with periods. The first part of the file is a  number that describes how many coins the file is worth. 
 
-The number of coins in each of the three files should be totaled.
+The number of coins in each of the three files should be totaled. 
 
-The function returns a JSON string that has an array of wallet names along with coin counts of each of the three folders. The following is an example of a Wallets folder with two sub folders named Default and Savings.  
+The function returns a JSON string that has an array of wallet names along with coin counts of each of the three folders and the number of each denomination. The denomination is the first number in the filename and ends with a period. The following is an example of a Wallets folder with two sub folders named Default and Savings.  
 ```json
 {
     "wallets": {
