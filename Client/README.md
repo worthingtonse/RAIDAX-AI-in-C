@@ -83,9 +83,9 @@ The function returns a JSON string that has an array of wallet names along with 
 {
     "wallets": {
         "Default":
-            {"bank": 1882,"fracked":9982.098, "limbo":88.000343},
+            {"bank": 1882,"fracked":9982.098, "limbo":88.000343, "1M":2,"100k":5,"10k":9,"1k";40,"100":15,"10":87,"1":83,"01":454   },
         "Savings": 
-            {"bank": 34,"fracked":0.098, "limbo":18.267}
+            {"bank": 34,"fracked":0.098, "limbo":18.267,"1M":2,"100k":5,"10k":9,"1k";40,"100":15,"10":87,"1":83,"01":454 }
     }
 }
 ```
