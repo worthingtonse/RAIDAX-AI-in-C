@@ -3,6 +3,25 @@
 
 CloudCoins are files that contain a serial number and twenty five authenticity numbers. The authenticity numbers are GUIDs that act like passords. There a
 
+## Pipelines
+
+1. start()
+	1. GenerateTaks()
+ 	2. ActionsLogBuffer()
+2. deposit()
+	1. CheckForUnfinnised()
+    		1. Load_coins(Suspect)
+    		2. Deposit
+    	2. Move(Import to Suspect)
+	3. Add_Pans
+ 	4. SaveCoins(deect)
+  	5.makeRequests()
+     	6. Request)
+      	7. Grade() 	 		    
+	
+
+
+
 
 # DEPOSIT 
 Takes coins and changes their Authenticity numbers to change ownership. 
