@@ -18,43 +18,44 @@
 #define MAX_THREADS 50
 
 // Request Header Structure
+// 32 bytes fixed. Comprized of three parts of 8 bytes each: Routing, Presentation and Encryption/Security
 typedef struct {
     // Same structure as previous implementation
-    uint8_t version;
-    uint8_t split_id;
-    uint8_t raida_id;
-    uint8_t shard_id;
-    uint8_t command_group;
-    uint8_t command;
-    uint8_t west_id[2];
+    uint8_t version; // Version of the protocol for later upgrades (0)
+    uint8_t split_id; // Allows the coin to split later ( 0 )
+    uint8_t raida_id; // The raida the request is for (0-24)
+    uint8_t shard_id; // Allos data to be sharded later (0)
+    uint8_t command_group; // The group in which the command belongs to
+    uint8_t command; // The id of the command being issued. 
+    uint8_t west_id[2]; // The coin ID
 
-    uint8_t pls_version;
-    uint8_t application[2];
-    uint8_t compression;
-    uint8_t translation;
-    uint8_t ai_translation;
-    uint8_t reserved[2];
+    uint8_t pls_version; // Presentation version (0)
+    uint8_t application[2]; // The port number (0)
+    uint8_t compression; // The type of compression (0)
+    uint8_t translation; //The type of translation (0)
+    uint8_t ai_translation; // If AI is used to compress or alter (0)
+    uint8_t udp_packed_id; //The packet number of a group of packets sent
+    uint8_t udp_packet_length[2]; //The total number of packets sent
 
-    uint8_t encryption_type;
-    uint8_t denomination;
-    uint8_t token_sn[4];
-    uint16_t body_length;
-
-    uint8_t nonce[6];
-    uint8_t echo[2];
+    uint8_t encryption_type; //See encryption table
+    uint8_t denomination;  // The denomination of the encryption key
+    uint8_t token_sn[4]; // The serial number of the encryption key
+    uint16_t body_length; // all bytes after the 32 byte header (includes terminating)
+    uint8_t nonce[6]; // Random nonce
+    uint8_t echo[2]; // Random number that server will return.
 } __attribute__((packed)) RequestHeader;
 
 // Response Header Structure
 typedef struct {
-    uint8_t raida_id;
-    uint8_t shard_id;
-    uint8_t status;
-    uint8_t command_group;
-    uint16_t udp_frame_count;
-    uint16_t client_echo;
-    uint8_t reserved;
-    uint8_t body_size[3];
-    uint32_t execution_time;
+    uint8_t raida_id; // the raida that is responding
+    uint8_t shard_id; //the shard responding
+    uint8_t status; // Set by the command
+    uint8_t command_group; //The command group to interpret the satus
+    uint16_t udp_frame_count[2]; // How many UDP packets to expect back
+    uint16_t client_echo[2]; // a copy of the echo that was sent in the request
+    uint8_t reserved; 
+    uint8_t body_size[3]; // how many bytes in the body excluding the header
+    uint32_t execution_time[4]; //in nano seconds
     uint8_t challenge_response[16];
 } __attribute__((packed)) ResponseHeader;
 
