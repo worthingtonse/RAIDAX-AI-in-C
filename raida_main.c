@@ -79,6 +79,7 @@ void print_hex(const uint8_t *data, size_t len) {
     printf("\n");
 }
 
+//The validation still needs to be worked on so that it is accurate. 
 void prepare_response_header(ResponseHeader *response_header, RequestHeader *request_header, uint16_t frame_count) {
     memset(response_header, 0, sizeof(ResponseHeader));
 
@@ -102,6 +103,7 @@ void prepare_response_header(ResponseHeader *response_header, RequestHeader *req
     response_header->body_size[2] = 0;
 }
 
+// Handle client's incomming command
 void *handle_udp_client(void *arg) {
     ThreadArgs *thread_args = (ThreadArgs *)arg;
     
@@ -115,22 +117,54 @@ void *handle_udp_client(void *arg) {
     active_threads++;
     pthread_mutex_unlock(&thread_mutex);
 
-    // Validate received data
-    if (thread_args->bytes_received < HEADER_SIZE) {
-        fprintf(stderr, "Invalid UDP request header\n");
+    // Initialize response header
+    ResponseHeader response_header;
+    memset(&response_header, 0, sizeof(ResponseHeader));
+
+    // Parse request header
+    RequestHeader *request_header = (RequestHeader*)thread_args->buffer;
+
+    // Validate request
+    if (!validate_request(request_header, &response_header, thread_args->bytes_received)) {
+        // Send error response
+        response_header.raida_id = RAIDA_ID;
+        response_header.shard_id = 0;
+        response_header.command_group = COMMAND_GROUP_ECHO;
+        response_header.client_echo = *(uint16_t*)request_header->echo;
+        response_header.udp_frame_count[0] = 0;
+        response_header.udp_frame_count[1] = 1;
+
+        ssize_t sent_bytes = sendto(thread_args->socket, 
+                                    &response_header, 
+                                    sizeof(response_header), 
+                                    0, 
+                                    (struct sockaddr*)&thread_args->client_addr, 
+                                    thread_args->client_len);
+
+        if (sent_bytes < 0) {
+            perror("UDP send failed");
+        }
         goto cleanup;
     }
 
-    RequestHeader *request_header = (RequestHeader*)thread_args->buffer;
-    ResponseHeader response_header;
+    // Set common response header fields
+    response_header.raida_id = RAIDA_ID;
+    response_header.shard_id = 0;
+    response_header.client_echo = *(uint16_t*)request_header->echo;
 
-    // Prepare response header with frame count (can be modified based on actual implementation)
-    prepare_response_header(&response_header, request_header, 1);
+    // Process command
+    process_command(request_header, &response_header, thread_args->buffer, thread_args->bytes_received);
 
-    // Send response header back to client
+    // Send response (header + body if any)
+    size_t send_size = sizeof(ResponseHeader);
+    uint32_t body_size = (response_header.body_size[0] << 16) | 
+                         (response_header.body_size[1] << 8) | 
+                         response_header.body_size[2];
+    send_size += body_size;
+
     ssize_t sent_bytes = sendto(thread_args->socket, 
                                 &response_header, 
-                                sizeof(response_header), 
+                                send_size, 
                                 0, 
                                 (struct sockaddr*)&thread_args->client_addr, 
                                 thread_args->client_len);
@@ -147,6 +181,122 @@ cleanup:
 
     free(arg);
     return NULL;
+} // End handle UDP packet
+// Validation function
+int validate_request(RequestHeader *request_header, ResponseHeader *response_header, ssize_t bytes_received) {
+    // Check header size
+    if (bytes_received < HEADER_SIZE) {
+        response_header->status = 0xFF; // Example error code for invalid header
+        response_header->body_size[0] = 0;
+        response_header->body_size[1] = 0;
+        response_header->body_size[2] = 0;
+        return 0;
+    }
+
+    // Check protocol version
+    if (request_header->version != 0) {
+        response_header->status = 0xFE; // Example error code for unsupported version
+        response_header->body_size[0] = 0;
+        response_header->body_size[1] = 0;
+        response_header->body_size[2] = 0;
+        return 0;
+    }
+
+    // Check RAIDA ID
+    if (request_header->raida_id != RAIDA_ID) {
+        response_header->status = 0xFD; // Example error code for invalid RAIDA ID
+        response_header->body_size[0] = 0;
+        response_header->body_size[1] = 0;
+        response_header->body_size[2] = 0;
+        return 0;
+    }
+
+    // Check command group
+    if (request_header->command_group != COMMAND_GROUP_ECHO) {
+        response_header->status = 0xFC; // Example error code for invalid command group
+        response_header->body_size[0] = 0;
+        response_header->body_size[1] = 0;
+        response_header->body_size[2] = 0;
+        return 0;
+    }
+
+    // Check valid command (assuming commands 1-5 are supported for this example)
+    if (request_header->command < 1 || request_header->command > 5) {
+        response_header->status = 0xFB; // Example error code for invalid command
+        response_header->body_size[0] = 0;
+        response_header->body_size[1] = 0;
+        response_header->body_size[2] = 0;
+        return 0;
+    }
+
+    // Check body length consistency
+    if (request_header->body_length > 0 && bytes_received < HEADER_SIZE + request_header->body_length) {
+        response_header->status = 0xFA; // Example error code for invalid body length
+        response_header->body_size[0] = 0;
+        response_header->body_size[1] = 0;
+        response_header->body_size[2] = 0;
+        return 0;
+    }
+
+    // If all checks pass, set default status
+    response_header->status = STATUS_NO_ERROR;
+    return 1;
+}
+
+// NEED TO ACTUALLY HANDLE THE COMMANDS. These are jsut placeholder. 
+void process_command(RequestHeader *request_header, ResponseHeader *response_header, uint8_t *buffer, ssize_t bytes_received) {
+    switch (request_header->command) {
+        case 1: // Example: Echo command
+            response_header->status = ECHO_STATUS_CODE; // 0xFA (250)
+            response_header->command_group = COMMAND_GROUP_ECHO;
+            response_header->udp_frame_count[0] = 0;
+            response_header->udp_frame_count[1] = 1; // Single frame
+            response_header->body_size[0] = 0;
+            response_header->body_size[1] = 0;
+            response_header->body_size[2] = 0; // No body for echo
+            break;
+
+        case 2: // Example: Return payload back
+            response_header->status = STATUS_NO_ERROR;
+            response_header->command_group = COMMAND_GROUP_ECHO;
+            response_header->udp_frame_count[0] = 0;
+            response_header->udp_frame_count[1] = 1;
+            // Copy body from request to response
+            if (request_header->body_length > 0) {
+                uint16_t body_len = request_header->body_length;
+                response_header->body_size[0] = (body_len >> 16) & 0xFF;
+                response_header->body_size[1] = (body_len >> 8) & 0xFF;
+                response_header->body_size[2] = body_len & 0xFF;
+                // Copy body to buffer after header (assumes buffer is large enough)
+                memcpy(buffer + sizeof(ResponseHeader), buffer + sizeof(RequestHeader), body_len);
+            } else {
+                response_header->body_size[0] = 0;
+                response_header->body_size[1] = 0;
+                response_header->body_size[2] = 0;
+            }
+            break;
+
+        case 3: // Example: Process data
+            response_header->status = STATUS_NO_ERROR;
+            response_header->command_group = COMMAND_GROUP_ECHO;
+            response_header->udp_frame_count[0] = 0;
+            response_header->udp_frame_count[1] = 1;
+            response_header->body_size[0] = 0;
+            response_header->body_size[1] = 0;
+            response_header->body_size[2] = 0;
+            // Add specific logic for command 3
+            break;
+
+        default:
+            response_header->status = 0xFB; // Invalid command
+            response_header->command_group = COMMAND_GROUP_ECHO;
+            response_header->udp_frame_count[0] = 0;
+            response_header->udp_frame_count[1] = 1;
+            response_header->body_size[0] = 0;
+            response_header->body_size[1] = 0;
+            response_header->body_size[2] = 0;
+            break;
+    }
 }
 
 int main() {
